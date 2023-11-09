@@ -15,7 +15,7 @@ ENV NODE_ENV=${NODE_ENV}
 WORKDIR /app
 COPY package.json ./
 COPY package-lock.json ./
-# NODE_ENV=productionにしてyarn install(npm install)するとdevDependenciesがインストールされません
+# NODE_ENV=productionにしてnpm ciするとdevDependenciesがインストールされません
 RUN npm ci
 COPY --from=builder /app/dist ./dist
 CMD ["npm", "run", "start:prod"]
