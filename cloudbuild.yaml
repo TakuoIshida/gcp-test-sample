@@ -1,0 +1,16 @@
+steps:
+- name: 'node'
+  entrypoint: 'npm'
+  args: ['install']
+- name: 'node'
+  entrypoint: 'npm'
+  args: ['test']
+- name: 'node'
+  entrypoint: 'npm'
+  args: ['run', 'build']
+artifacts:
+    npmPackages:
+    - repository: 'https://asia-northeast1-npm.pkg.dev/crypto-pulsar-404502/gcp-sample'
+      packagePath: '.'
+logs:
+  bucket: my-logs-bucket
