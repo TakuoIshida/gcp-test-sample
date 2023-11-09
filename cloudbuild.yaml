@@ -12,5 +12,3 @@ artifacts:
     npmPackages:
     - repository: 'https://asia-northeast1-npm.pkg.dev/crypto-pulsar-404502/gcp-sample'
       packagePath: '.'
-logs:
-  bucket: my-logs-bucket
