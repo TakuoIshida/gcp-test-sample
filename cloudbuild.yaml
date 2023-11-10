@@ -15,6 +15,6 @@ steps:
     - '--image'
     - 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA'
     - '--region'
-    - 'REGION'
+    - 'asia-northeast1'
 images:
   - 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA'
