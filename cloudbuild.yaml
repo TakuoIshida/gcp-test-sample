@@ -1,14 +1,10 @@
 steps:
-- name: 'node'
-  entrypoint: 'npm'
-  args: ['install']
-- name: 'node'
-  entrypoint: 'npm'
-  args: ['test']
-- name: 'node'
-  entrypoint: 'npm'
-  args: ['run', 'build']
-artifacts:
-    npmPackages:
-    - repository: 'https://asia-northeast1-npm.pkg.dev/infinite-seer-404702/gcp-sample-dev'
-      packagePath: '.'
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/gcp-sample/sample-latest$COMMIT_SHA', '.' ]
+images:
+  - 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/gcp-sample/sample-latest$COMMIT_SHA'
+
+# artifacts:
+#     npmPackages:
+#     - repository: 'https://asia-northeast1-npm.pkg.dev/infinite-seer-404702/gcp-sample-dev'
+#       packagePath: '.'
