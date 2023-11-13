@@ -22,6 +22,9 @@ steps:
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'asia-northeast1-docker.pkg.dev/$PROJECT_ID/gcp-sample:$COMMIT_SHA', '.' ]
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA']
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
