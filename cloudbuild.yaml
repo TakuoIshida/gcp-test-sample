@@ -2,39 +2,39 @@ steps:
   - name: 'ubuntu'
     script: |
       #!/usr/bin/env bash
-      echo "Your CLOUD_TASKS_QUEUE_NAME is $$CLOUD_TASKS_QUEUE_NAME, URL is $$URL."
+      echo "Your CLOUD_TASKS_QUEUE_NAME is $CLOUD_TASKS_QUEUE_NAME, URL is $URL."
     secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL']
-  # Build the container image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA', '.' ]
-  # Push the container image to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA']
-  # Create secret.yaml
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
-    args:
-      - "-c"
-      - |
-        cat << EOF >> app-secret.yaml
-        env_variables:
-          CLOUD_TASKS_QUEUE_NAME: $CLOUD_TASKS_QUEUE_NAME
-          URL: $URL
-        EOF
-    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL']
-  # Deploy container image to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'deploy'
-      - 'gcp-sample-service'
-      - '--image'
-      - 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA'
-      - '--region'
-      - 'asia-northeast1'
-      - '--env-vars-file'
-      - './app-secret.yaml'
+  # # Build the container image
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA', '.' ]
+  # # Push the container image to Container Registry
+  # - name: 'gcr.io/cloud-builders/docker'
+  #   args: ['push', 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA']
+  # # Create secret.yaml
+  # - name: 'gcr.io/cloud-builders/gcloud'
+  #   entrypoint: 'bash'
+  #   args:
+  #     - "-c"
+  #     - |
+  #       cat << EOF >> app-secret.yaml
+  #       env_variables:
+  #         CLOUD_TASKS_QUEUE_NAME: $CLOUD_TASKS_QUEUE_NAME
+  #         URL: $URL
+  #       EOF
+  #   secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL']
+  # # Deploy container image to Cloud Run
+  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  #   entrypoint: gcloud
+  #   args:
+  #     - 'run'
+  #     - 'deploy'
+  #     - 'gcp-sample-service'
+  #     - '--image'
+  #     - 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA'
+  #     - '--region'
+  #     - 'asia-northeast1'
+  #     - '--env-vars-file'
+  #     - './app-secret.yaml'
 availableSecrets:
   secretManager:
   - versionName: projects/$PROJECT_NUMBER/secrets/CLOUD_TASKS_QUEUE_NAME/versions/latest
