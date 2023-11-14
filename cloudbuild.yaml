@@ -16,8 +16,9 @@ steps:
         CLOUD_TASKS_QUEUE_NAME: $$CLOUD_TASKS_QUEUE_NAME
         URL: $$URL
         LOCATION: $$LOCATION
+        SERVICE_ACCOUNT: $$SERVICE_ACCOUNT
         EOF
-    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL', 'LOCATION']
+    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL', 'LOCATION', 'SERVICE_ACCOUNT']
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
@@ -39,3 +40,5 @@ availableSecrets:
     env: 'URL'
   - versionName: projects/$PROJECT_NUMBER/secrets/LOCATION/versions/latest
     env: 'LOCATION'
+  - versionName: projects/$PROJECT_NUMBER/secrets/SERVICE_ACCOUNT/versions/latest
+    env: 'SERVICE_ACCOUNT'

@@ -11,7 +11,7 @@ export class AppController {
   }
 
   @Post('/tasks/create')
-  createTask(): string {
+  async createTask(): Promise<string> {
     return this.appService.createTasks();
   }
 
