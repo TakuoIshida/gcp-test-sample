@@ -1,9 +1,4 @@
 steps:
-  - name: 'ubuntu'
-    script: |
-      #!/usr/bin/env bash
-      echo "Your CLOUD_TASKS_QUEUE_NAME is $CLOUD_TASKS_QUEUE_NAME, URL is $URL."
-    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL']
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA', '.' ]
@@ -17,16 +12,12 @@ steps:
       - "-c"
       - |
         cat << EOF >> app-secret.yaml
+        PROJECT_ID: $PROJECT_ID
         CLOUD_TASKS_QUEUE_NAME: $$CLOUD_TASKS_QUEUE_NAME
         URL: $$URL
+        LOCATION: $$LOCATION
         EOF
-    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL']
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
-    args:
-      - "-c"
-      - |
-        cat app-secret.yaml
+    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL', 'LOCATION']
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
@@ -46,3 +37,5 @@ availableSecrets:
     env: 'CLOUD_TASKS_QUEUE_NAME'
   - versionName: projects/$PROJECT_NUMBER/secrets/URL/versions/latest
     env: 'URL'
+  - versionName: projects/$PROJECT_NUMBER/secrets/LOCATION/versions/latest
+    env: 'LOCATION'
