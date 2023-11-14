@@ -11,7 +11,7 @@ RUN npm run build
 
 FROM node:16-stretch-slim AS runner
 ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+ENV CLOUD_TASKS_QUEUE_NAME=${CLOUD_TASKS_QUEUE_NAME}
 WORKDIR /app
 COPY package.json ./
 COPY package-lock.json ./
