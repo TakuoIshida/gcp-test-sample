@@ -3,7 +3,7 @@ steps:
     script: |
       #!/usr/bin/env bash
       echo "Your CLOUD_TASKS_QUEUE_NAME is $CLOUD_TASKS_QUEUE_NAME, URL is $URL."
-    secretEnv: ['CLOUD_TASKS_QUEUE_NAME']
+    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL']
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA', '.' ]
