@@ -2,7 +2,6 @@ steps:
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA', '.' ]
-    secretEnv: ['CLOUD_TASKS_QUEUE_NAME']
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA']
@@ -17,6 +16,7 @@ steps:
       - 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA'
       - '--region'
       - 'asia-northeast1'
+    secretEnv: ['CLOUD_TASKS_QUEUE_NAME']
 availableSecrets:
   secretManager:
   - versionName: projects/$PROJECT_NUMBER/secrets/CLOUD_TASKS_QUEUE_NAME/versions/latest
