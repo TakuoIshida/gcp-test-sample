@@ -28,19 +28,19 @@ steps:
       - "-c"
       - |
         cat app-secret.yaml
-  # # Deploy container image to Cloud Run
-  # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  #   entrypoint: gcloud
-  #   args:
-  #     - 'run'
-  #     - 'deploy'
-  #     - 'gcp-sample-service'
-  #     - '--image'
-  #     - 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA'
-  #     - '--region'
-  #     - 'asia-northeast1'
-  #     - '--env-vars-file'
-  #     - './app-secret.yaml'
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'gcp-sample-service'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA'
+      - '--region'
+      - 'asia-northeast1'
+      - '--env-vars-file'
+      - './app-secret.yaml'
 availableSecrets:
   secretManager:
   - versionName: projects/$PROJECT_NUMBER/secrets/CLOUD_TASKS_QUEUE_NAME/versions/latest
