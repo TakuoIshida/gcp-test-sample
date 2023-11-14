@@ -21,8 +21,7 @@ steps:
       - 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA'
       - '--region'
       - 'asia-northeast1'
-      - '--set-env-vars CLOUD_TASKS_QUEUE_NAME=$CLOUD_TASKS_QUEUE_NAME \
-        --set-env-vars HOGE=HOGE'
+      - '--set-env-vars HOGE=HOGE'
     secretEnv: ['CLOUD_TASKS_QUEUE_NAME']
 availableSecrets:
   secretManager:
