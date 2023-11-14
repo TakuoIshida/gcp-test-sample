@@ -19,5 +19,5 @@ steps:
       - 'asia-northeast1'
 availableSecrets:
   secretManager:
-  - versionName: projects/$PROJECT_ID/secrets/CLOUD_TASKS_QUEUE_NAME/versions/latest
+  - versionName: projects/$PROJECT_NUMBER/secrets/CLOUD_TASKS_QUEUE_NAME/versions/latest
     env: 'CLOUD_TASKS_QUEUE_NAME'
