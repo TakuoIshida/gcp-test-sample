@@ -2,7 +2,7 @@ steps:
   - name: 'ubuntu'
     script: |
       #!/usr/bin/env bash
-      echo "Your CLOUD_TASKS_QUEUE_NAME is $CLOUD_TASKS_QUEUE_NAME, URL is $URL."
+      echo "Your CLOUD_TASKS_QUEUE_NAME is $$CLOUD_TASKS_QUEUE_NAME, URL is $$URL."
     secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL']
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
