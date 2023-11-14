@@ -10,6 +10,18 @@ steps:
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA']
+  # Create secret.yaml
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - "-c"
+      - |
+        cat <<EOF> app-secret.yaml
+        env_variables:
+          CLOUD_TASKS_QUEUE_NAME: $$CLOUD_TASKS_QUEUE_NAME
+          URL:$$URL
+        EOF
+    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL']
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
@@ -21,10 +33,12 @@ steps:
       - 'gcr.io/$PROJECT_ID/gcp-sample:$COMMIT_SHA'
       - '--region'
       - 'asia-northeast1'
-      - '--set-env-vars'
-      - 'HOGE=HOGE'
+      - '--env-vars-file'
+      - './app-secret.yaml'
     secretEnv: ['CLOUD_TASKS_QUEUE_NAME']
 availableSecrets:
   secretManager:
   - versionName: projects/$PROJECT_NUMBER/secrets/CLOUD_TASKS_QUEUE_NAME/versions/latest
     env: 'CLOUD_TASKS_QUEUE_NAME'
+  - versionName: projects/$PROJECT_NUMBER/secrets/URL/versions/latest
+    env: 'URL'
