@@ -18,10 +18,16 @@ steps:
       - |
         cat << EOF >> app-secret.yaml
         env_variables:
-          CLOUD_TASKS_QUEUE_NAME: $CLOUD_TASKS_QUEUE_NAME
-          URL: $URL
+          CLOUD_TASKS_QUEUE_NAME: $$CLOUD_TASKS_QUEUE_NAME
+          URL: $$URL
         EOF
     secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL']
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - "-c"
+      - |
+        cat app-secret.yaml
   # # Deploy container image to Cloud Run
   # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   #   entrypoint: gcloud
