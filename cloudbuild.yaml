@@ -35,7 +35,6 @@ steps:
       - 'asia-northeast1'
       - '--env-vars-file'
       - './app-secret.yaml'
-    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL']
 availableSecrets:
   secretManager:
   - versionName: projects/$PROJECT_NUMBER/secrets/CLOUD_TASKS_QUEUE_NAME/versions/latest
