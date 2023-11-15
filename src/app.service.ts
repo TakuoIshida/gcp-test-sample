@@ -12,13 +12,8 @@ export class AppService {
     const location = process.env.LOCATION; // The GCP region of your queue
     const url = `${process.env.URL}/tasks/handle`; // The full url path that the request will be sent to
     const email = process.env.SERVICE_ACCOUNT; // Cloud IAM service account
-    const payload = 'Hello, World!'; // The task HTTP request body
     const client = new v2beta3.CloudTasksClient();
     const parent = client.queuePath(project, location, queue);
-
-    // Convert message to buffer.
-    const convertedPayload = JSON.stringify(payload);
-    const body = Buffer.from(convertedPayload).toString('base64');
 
     const task = {
       httpRequest: {
@@ -31,7 +26,6 @@ export class AppService {
         headers: {
           'Content-Type': 'application/json',
         },
-        body,
       },
     };
 
