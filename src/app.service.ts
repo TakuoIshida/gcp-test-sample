@@ -1,5 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { v2beta3 } from '@google-cloud/tasks';
+import { PubSub } from '@google-cloud/pubsub';
+import { uuid } from 'uuidv4';
+
+const projectId = process.env.PROJECT_ID; // Your GCP Project id
+const topicName = process.env.PUB_SUB_TOPIC_NAME; // Your GCP Project id
+const subscriptionName = process.env.PUB_SUB_SUBSCRIPTION_NAME; // Your GCP Project id
+
 @Injectable()
 export class AppService {
   getHello(): string {
@@ -39,6 +46,36 @@ export class AppService {
       console.error(Error(error.message));
     }
     return `tasks created to ${url}. `;
+  }
+
+  async createTopic(subscriptionMessage: string): Promise<void> {
+    const topic = new PubSub({ projectId }).topic(topicName);
+    // Creates a subscription on that new topic
+    const [subscription] = await topic.createSubscription(
+      subscriptionName + uuid(),
+    );
+
+    // Receive callbacks for new messages on the subscription
+    subscription.on('message', (message) => {
+      console.log('Received message:', message.data.toString());
+      process.exit(0);
+    });
+
+    // Receive callbacks for errors on the subscription
+    subscription.on('error', (error) => {
+      console.error('Received error:', error);
+      process.exit(1);
+    });
+
+    // Send a message to the topic
+    topic.publishMessage({ data: Buffer.from(subscriptionMessage) });
+  }
+
+  async subscribeMessage(subscriptionName: string): Promise<void> {
+    const topic = new PubSub({ projectId }).topic(topicName);
+    const subscription = await topic.subscription(subscriptionName).get();
+    console.log(`Message subscribed`);
+    console.log(subscription);
   }
 }
 
