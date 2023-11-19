@@ -81,8 +81,8 @@ export class AppService {
       .subscription(subscriptionName);
     console.log(`Message subscribed`);
     subscription.on('message', async (message) => {
-      console.log(`message: ${message}`);
-      message.ack();
+      console.log(`message: ${message.data.toString()}`);
+      await message.ackWithResponse();
     });
   }
 }
