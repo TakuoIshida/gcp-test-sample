@@ -20,19 +20,19 @@ export class AppController {
     return 'tasks completed';
   }
 
-  @Post('/topic/create')
+  @Post('/subscribe/publish')
   async createTopic(
     @Body() body: { subscriptionMessage: string },
   ): Promise<string> {
     console.log(body.subscriptionMessage);
-    await this.appService.createTopic(body.subscriptionMessage);
+    await this.appService.publish(body.subscriptionMessage);
     return `subscriptionMessage: ${body.subscriptionMessage} is pushed`;
   }
 
-  @Post('/topic/exec')
-  async execTopic(@Body() body: { subscriptionName: string }): Promise<string> {
-    console.log(body.subscriptionName);
-    await this.appService.subscribeMessage(body.subscriptionName);
-    return `topic executed to ${body.subscriptionName}`;
+  @Get('/subscribe/pull')
+  async execTopic(): Promise<string> {
+    console.log('/subscribe/pull');
+    await this.appService.subscribeMessage();
+    return `subscribe pulled`;
   }
 }

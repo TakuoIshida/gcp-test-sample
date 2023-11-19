@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v2beta3 } from '@google-cloud/tasks';
-import { PubSub } from '@google-cloud/pubsub';
-import { v4 as uuidv4 } from 'uuid';
+import { PubSub, v1 } from '@google-cloud/pubsub';
 
 const projectId = process.env.PROJECT_ID; // Your GCP Project id
 const topicName = process.env.PUB_SUB_TOPIC_NAME; // Your GCP Project id
@@ -48,48 +47,49 @@ export class AppService {
     return `tasks created to ${url}. `;
   }
 
-  async createTopic(subscriptionMessage: string): Promise<void> {
+  async publish(subscriptionMessage: string): Promise<void> {
     console.log(`topicName: ${topicName}`);
     const topic = new PubSub({ projectId }).topic(topicName);
-    console.log(`topic: ${topic}`);
-
-    // Creates a subscription on that new topic
-    const [subscription] = await topic.createSubscription(
-      subscriptionName + uuidv4(),
-    );
-    console.log(`subscription: ${subscription}`);
-
-    // Receive callbacks for new messages on the subscription
-    subscription.on('message', (message) => {
-      console.log('Received message:', message.data.toString());
-      process.exit(0);
-    });
-
-    // Receive callbacks for errors on the subscription
-    subscription.on('error', (error) => {
-      console.error('Received error:', error);
-      process.exit(1);
-    });
 
     // Send a message to the topic
     await topic.publishMessage({ data: Buffer.from(subscriptionMessage) });
   }
 
-  async subscribeMessage(subscriptionName: string): Promise<void> {
-    const subscription = new PubSub({ projectId })
-      .topic(topicName)
-      .subscription(subscriptionName);
-    console.log(`Message subscribed`);
-    const messageHandler = async (message) => {
-      console.log(`message: ${message.data.toString()}`);
-      await message.ackWithResponse();
-    };
-    subscription.on('message', messageHandler);
+  async subscribeMessage(): Promise<void> {
+    const subClient = new v1.SubscriberClient();
+    const subscription = subClient.subscriptionPath(
+      projectId,
+      subscriptionName,
+    );
 
-    setTimeout(() => {
-      subscription.removeListener('message', messageHandler);
-      console.log(`message received.`);
-    }, 1000);
+    const request = {
+      subscription,
+      maxMessages: 10,
+    };
+
+    // The subscriber pulls a specified number of messages.
+    const [response] = await subClient.pull(request);
+
+    const ackIds = [];
+    for (const message of response.receivedMessages || []) {
+      console.log(`Received message: ${message.message.data}`);
+      if (message.ackId) {
+        ackIds.push(message.ackId);
+      }
+    }
+    console.log(`ackIds: ${ackIds}`);
+    if (ackIds.length !== 0) {
+      // Acknowledge all of the messages. You could also acknowledge
+      // these individually, but this is more efficient.
+      const ackRequest = {
+        subscription,
+        ackIds: ackIds,
+      };
+
+      await subClient.acknowledge(ackRequest);
+    }
+
+    console.log('Done.');
   }
 }
 
