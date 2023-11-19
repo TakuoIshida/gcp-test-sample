@@ -65,12 +65,18 @@ export class AppService {
     const request = {
       subscription,
       maxMessages: 10,
+      returnImmediately: true,
     };
 
     // The subscriber pulls a specified number of messages.
     const [response] = await subClient.pull(request);
 
     const ackIds = [];
+    if (response.receivedMessages.length === 0) {
+      console.log('there is no subscription message.');
+      return;
+    }
+
     for (const message of response.receivedMessages || []) {
       console.log(`Received message: ${message.message.data}`);
       if (message.ackId) {
