@@ -76,10 +76,14 @@ export class AppService {
   }
 
   async subscribeMessage(subscriptionName: string): Promise<void> {
-    const topic = new PubSub({ projectId }).topic(topicName);
-    const subscription = await topic.subscription(subscriptionName).get();
+    const subscription = new PubSub({ projectId })
+      .topic(topicName)
+      .subscription(subscriptionName);
     console.log(`Message subscribed`);
-    console.log(subscription);
+    subscription.on('message', async (message) => {
+      console.log(`message: ${message}`);
+      message.ack();
+    });
   }
 }
 
