@@ -10,6 +10,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  // Cloud Tasks
   @Post('/tasks/create')
   async createTask(): Promise<string> {
     return this.appService.createTasks();
@@ -20,8 +21,9 @@ export class AppController {
     return 'tasks completed';
   }
 
+  // Cloud Pub/Sub
   @Post('/subscribe/publish')
-  async createTopic(
+  async publishSubscriptionMessage(
     @Body() body: { subscriptionMessage: string },
   ): Promise<string> {
     console.log(body.subscriptionMessage);
@@ -29,10 +31,30 @@ export class AppController {
     return `subscriptionMessage: ${body.subscriptionMessage} is pushed`;
   }
 
+  // pull型
+  // https://cloud.google.com/pubsub/docs/pull?hl=ja
   @Get('/subscribe/pull')
-  async execTopic(): Promise<string> {
+  async pullSubscriptionMessage(): Promise<string> {
     console.log('/subscribe/pull');
     await this.appService.subscribeMessage();
-    return `subscribe pulled`;
+    return `pull subscription`;
+  }
+
+  // push型
+  // https://cloud.google.com/pubsub/docs/samples/pubsub-create-push-subscription?hl=ja
+  @Post('/subscribe/push')
+  async pushSubscriptionMessage(
+    @Body() payload: { messageId: string; subscriptionMessage: string },
+  ): Promise<void> {
+    console.log(JSON.stringify(payload));
+    await this.appService.pushSubscriptionPayload(payload);
+  }
+
+  @Post('/subscribe/push/message')
+  subscribePushMessage(
+    @Body() body: { messageId: string; subscriptionMessage: string },
+  ): void {
+    console.log(`@Post('/subscribe/push/message')`);
+    console.log(JSON.stringify(body));
   }
 }

@@ -19,8 +19,10 @@ steps:
         SERVICE_ACCOUNT: $$SERVICE_ACCOUNT
         PUB_SUB_TOPIC_NAME: $$PUB_SUB_TOPIC_NAME
         PUB_SUB_SUBSCRIPTION_NAME: $$PUB_SUB_SUBSCRIPTION_NAME
+        PUB_SUB_PUSH_TOPIC_NAME: $$PUB_SUB_PUSH_TOPIC_NAME
+        PUB_SUB_PUSH_SUBSCRIPTION_NAME: $$PUB_SUB_PUSH_SUBSCRIPTION_NAME
         EOF
-    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL', 'LOCATION', 'SERVICE_ACCOUNT', 'PUB_SUB_TOPIC_NAME' , 'PUB_SUB_SUBSCRIPTION_NAME']
+    secretEnv: ['CLOUD_TASKS_QUEUE_NAME', 'URL', 'LOCATION', 'SERVICE_ACCOUNT', 'PUB_SUB_TOPIC_NAME' , 'PUB_SUB_SUBSCRIPTION_NAME', 'PUB_SUB_PUSH_TOPIC_NAME', 'PUB_SUB_PUSH_SUBSCRIPTION_NAME']
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
@@ -48,3 +50,7 @@ availableSecrets:
     env: 'PUB_SUB_TOPIC_NAME'
   - versionName: projects/$PROJECT_NUMBER/secrets/PUB_SUB_SUBSCRIPTION_NAME/versions/latest
     env: 'PUB_SUB_SUBSCRIPTION_NAME'
+  - versionName: projects/$PROJECT_NUMBER/secrets/PUB_SUB_PUSH_TOPIC_NAME/versions/latest
+    env: 'PUB_SUB_PUSH_TOPIC_NAME'
+  - versionName: projects/$PROJECT_NUMBER/secrets/PUB_SUB_PUSH_SUBSCRIPTION_NAME/versions/latest
+    env: 'PUB_SUB_PUSH_SUBSCRIPTION_NAME'

@@ -2,9 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { v2beta3 } from '@google-cloud/tasks';
 import { PubSub, v1 } from '@google-cloud/pubsub';
 
-const projectId = process.env.PROJECT_ID; // Your GCP Project id
-const topicName = process.env.PUB_SUB_TOPIC_NAME; // Your GCP Project id
-const subscriptionName = process.env.PUB_SUB_SUBSCRIPTION_NAME; // Your GCP Project id
+const projectId = process.env.PROJECT_ID;
+const topicName = process.env.PUB_SUB_TOPIC_NAME;
+const subscriptionName = process.env.PUB_SUB_SUBSCRIPTION_NAME;
+const pushTopicName = process.env.PUB_SUB_PUSH_TOPIC_NAME;
+const pushSubscriptionName = process.env.PUB_SUB_PUSH_SUBSCRIPTION_NAME;
 
 @Injectable()
 export class AppService {
@@ -13,7 +15,7 @@ export class AppService {
   }
 
   async createTasks(): Promise<string> {
-    const project = process.env.PROJECT_ID; // Your GCP Project id
+    const project = process.env.PROJECT_ID;
     const queue = process.env.CLOUD_TASKS_QUEUE_NAME; // Name of your Queue
     const location = process.env.LOCATION; // The GCP region of your queue
     const url = `${process.env.URL}/tasks/handle`; // The full url path that the request will be sent to
@@ -96,6 +98,19 @@ export class AppService {
     }
 
     console.log('Done.');
+  }
+
+  async pushSubscriptionPayload(payload: {
+    messageId: string;
+    subscriptionMessage: string;
+  }): Promise<void> {
+    const pushTopic = new PubSub({ projectId }).topic(pushTopicName);
+    console.log(`Subscription ${pushSubscriptionName} created.`);
+
+    const messageId = await pushTopic.publishMessage({
+      json: Buffer.from(JSON.stringify(payload)),
+    });
+    console.log(`published. messageId: ${messageId}`);
   }
 }
 
