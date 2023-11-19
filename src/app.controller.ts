@@ -21,13 +21,18 @@ export class AppController {
   }
 
   @Post('/topic/create')
-  async createTopic(@Body() subscriptionMessage: string): Promise<void> {
-    this.appService.createTopic(subscriptionMessage);
+  async createTopic(
+    @Body() body: { subscriptionMessage: string },
+  ): Promise<string> {
+    console.log(body.subscriptionMessage);
+    await this.appService.createTopic(body.subscriptionMessage);
+    return `subscriptionMessage: ${body.subscriptionMessage} is pushed`;
   }
 
   @Post('/topic/exec')
-  async execTopic(@Body() subscriptionName: string): Promise<string> {
-    await this.appService.subscribeMessage(subscriptionName);
-    return 'topic executed';
+  async execTopic(@Body() body: { subscriptionName: string }): Promise<string> {
+    console.log(body.subscriptionName);
+    await this.appService.subscribeMessage(body.subscriptionName);
+    return `topic executed to ${body.subscriptionName}`;
   }
 }
