@@ -80,10 +80,16 @@ export class AppService {
       .topic(topicName)
       .subscription(subscriptionName);
     console.log(`Message subscribed`);
-    subscription.on('message', async (message) => {
+    const messageHandler = async (message) => {
       console.log(`message: ${message.data.toString()}`);
       await message.ackWithResponse();
-    });
+    };
+    subscription.on('message', messageHandler);
+
+    setTimeout(() => {
+      subscription.removeListener('message', messageHandler);
+      console.log(`message received.`);
+    }, 1000);
   }
 }
 
