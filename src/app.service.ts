@@ -49,11 +49,15 @@ export class AppService {
   }
 
   async createTopic(subscriptionMessage: string): Promise<void> {
+    console.log(`topicName: ${topicName}`);
     const topic = new PubSub({ projectId }).topic(topicName);
+    console.log(`topic: ${topic}`);
+
     // Creates a subscription on that new topic
     const [subscription] = await topic.createSubscription(
       subscriptionName + uuid(),
     );
+    console.log(`subscription: ${subscription}`);
 
     // Receive callbacks for new messages on the subscription
     subscription.on('message', (message) => {
@@ -68,7 +72,7 @@ export class AppService {
     });
 
     // Send a message to the topic
-    topic.publishMessage({ data: Buffer.from(subscriptionMessage) });
+    await topic.publishMessage({ data: Buffer.from(subscriptionMessage) });
   }
 
   async subscribeMessage(subscriptionName: string): Promise<void> {
