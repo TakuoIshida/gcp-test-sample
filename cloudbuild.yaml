@@ -44,3 +44,7 @@ availableSecrets:
     env: 'LOCATION'
   - versionName: projects/$PROJECT_NUMBER/secrets/SERVICE_ACCOUNT/versions/latest
     env: 'SERVICE_ACCOUNT'
+  - versionName: projects/$PROJECT_NUMBER/secrets/PUB_SUB_TOPIC_NAME/versions/latest
+    env: 'PUB_SUB_TOPIC_NAME'
+  - versionName: projects/$PROJECT_NUMBER/secrets/PUB_SUB_SUBSCRIPTION_NAME/versions/latest
+    env: 'PUB_SUB_SUBSCRIPTION_NAME'
