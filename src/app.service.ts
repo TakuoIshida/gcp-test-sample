@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { v2beta3 } from '@google-cloud/tasks';
 import { PubSub } from '@google-cloud/pubsub';
-import { uuid } from 'uuidv4';
+import { uuid as uuidv4 } from 'uuidv4';
 
 const projectId = process.env.PROJECT_ID; // Your GCP Project id
 const topicName = process.env.PUB_SUB_TOPIC_NAME; // Your GCP Project id
@@ -55,7 +55,7 @@ export class AppService {
 
     // Creates a subscription on that new topic
     const [subscription] = await topic.createSubscription(
-      subscriptionName + uuid(),
+      subscriptionName + uuidv4(),
     );
     console.log(`subscription: ${subscription}`);
 
