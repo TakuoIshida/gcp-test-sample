@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { v2beta3 } from '@google-cloud/tasks';
 import { PubSub, v1 } from '@google-cloud/pubsub';
+import vision from '@google-cloud/vision';
 
 const projectId = process.env.PROJECT_ID;
 const topicName = process.env.PUB_SUB_TOPIC_NAME;
@@ -111,6 +112,26 @@ export class AppService {
       json: Buffer.from(JSON.stringify(payload)),
     });
     console.log(`published. messageId: ${messageId}`);
+  }
+
+  // Vision API
+  // GCPの学習済みmodelを使用した画像認識の場合は、利用する。カスタマイズして学習させる場合は、Vertex AIを利用する
+  // サンプル：https://cloud.google.com/vision/docs/ocr?hl=ja&apix_params=%7B%22resource%22%3A%7B%22requests%22%3A%5B%7B%22features%22%3A%5B%7B%22type%22%3A%22TEXT_DETECTION%22%7D%5D%2C%22image%22%3A%7B%22source%22%3A%7B%22imageUri%22%3A%22gs%3A%2F%2Fcloud-samples-data%2Fvision%2Focr%2Fsign.jpg%22%7D%7D%7D%5D%7D%7D#detect_text_in_a_remote_image
+  async recognizeText(fileName: string) {
+    const bucketName = process.env.GCS_BUCKET_NAME;
+
+    // Creates a client
+    const visionClient = new vision.ImageAnnotatorClient();
+    console.log(`bucketName: ${bucketName}, fileName: ${fileName}`);
+
+    const [result] = await visionClient.textDetection(
+      // `gs://${bucketName}/${fileName}`,
+      `gs://cloud-samples-data/vision/ocr/sign.jpg`,
+    );
+    result.textAnnotations.forEach((text, idx) => {
+      if (idx === 0) return;
+      console.log(text.description);
+    });
   }
 }
 

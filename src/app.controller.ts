@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -56,5 +56,14 @@ export class AppController {
   ): void {
     console.log(`@Post('/subscribe/push/message')`);
     console.log(JSON.stringify(body));
+  }
+
+  // Vision AI
+  @Get('/vision/recognize/ocr/:fileName')
+  async recognizeText(@Param('fileName') fileName: string): Promise<void> {
+    console.log(`/vision/recognize/ocr/${fileName}`);
+    if (!fileName.length) return;
+    console.log(`request recognize`);
+    await this.appService.recognizeText(fileName);
   }
 }
